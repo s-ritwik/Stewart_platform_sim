@@ -13,7 +13,7 @@ git clone https://github.com/HadiYd/stewart_platform_learning.git
 ## Build the controller plugin for controlling joints and changing the PID values.
 > **Plugin credit by:** [ros_sdf](https://github.com/daniel-s-ingram/ros_sdf) with modification of adding PID section to the code.
 ```
-cd src/stewart_platform/plugin
+cd stewart_platform_learning/src/stewart_platform/plugin
 mkdir build
 cd build
 cmake ../
