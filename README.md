@@ -1,3 +1,9 @@
+Clone of HadiYd
+
+Simulating 6DOF movement of a stewart on gazebo
+
+
+
 # Stewart Platform Learning
 Set of tools and environments to implement Deep Reinforcement Learning (DRL) algorithms on Stewart Platfrom by parametric simulation in Gazebo and ROS.
 
