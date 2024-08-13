@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 main repo: https://github.com/marload/DeepRL-TensorFlow2
 """
