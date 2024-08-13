@@ -3,7 +3,6 @@ Clone of HadiYd
 Simulating 6DOF movement of a stewart on gazebo
 
 
-
 # Stewart Platform Learning
 Set of tools and environments to implement Deep Reinforcement Learning (DRL) algorithms on Stewart Platfrom by parametric simulation in Gazebo and ROS.
 
@@ -39,6 +38,14 @@ rosdep install openai_ros
 ```
 roslaunch stewart_platform stewart.launch 
 ```
+
+Use the Python controller in src of stewart_platform
+```
+cd stewart_platform_learning/src/stewart_platform/src
+code code4.py
+```
+Run this py file to get desired motions
+
 
 In case of an error in the subsequent launches, kill the previous running Gazebo server by:
 ```
