@@ -51,6 +51,10 @@ In case of an error in the subsequent launches, kill the previous running Gazebo
 ```
 killall -9 gzserver
 ```
+If platform is still breaking ,run this in another terminal after roslaunch
+```
+rosrun stewart_platform DDPG_Continuous.py
+```
 
 ## Running the deep reinforcement learning training scripts
 I use [wandb](https://wandb.ai/site) to log all the rewards and performance metrics. First pip install it, then create a free account to use it. 
