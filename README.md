@@ -1,4 +1,4 @@
-Clone of HadiYd
+Clone of HadiYd with added controller
 
 Simulating 6DOF movement of a stewart on gazebo
 
