@@ -93,12 +93,9 @@ def generate_launch_description():
         parameters=[
             {'use_csv': False},
             {'csv_path': '/home/rycker/projects/ros2_ws/src/stewart_platform_learning/src/stewart_platform/D1H3_heave.csv'},
-            {'move_whole_platform_xy': True},
-            {'model_name': 'stewart'},
-            {'base_link_name': 'base_link'},
-            {'world_x_origin': 3.0},
-            {'world_y_origin': 0.0},
-            {'world_z': 0.0},
+            {'x_amplitude': 0.0},
+            {'y_amplitude': 0.0},
+            {'command_rate': 20.0},
         ],
     )
 
