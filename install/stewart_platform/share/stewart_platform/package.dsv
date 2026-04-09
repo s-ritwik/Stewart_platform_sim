@@ -1,0 +1,5 @@
+source;share/stewart_platform/local_setup.bash
+source;share/stewart_platform/local_setup.dsv
+source;share/stewart_platform/local_setup.ps1
+source;share/stewart_platform/local_setup.sh
+source;share/stewart_platform/local_setup.zsh

@@ -9,6 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(gazebo_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(gazebo_ros REQUIRED)
 
@@ -16,6 +17,7 @@ set(dependencies
   rclcpp
   std_msgs
   geometry_msgs
+  gazebo_msgs
   gazebo_ros
 )
 
@@ -51,5 +53,5 @@ install(DIRECTORY
   world
   DESTINATION share/${PROJECT_NAME})
 
-ament_export_dependencies(${dependencies} Eigen3 gazebo_ros)
+ament_export_dependencies(${dependencies} Eigen3 gazebo_ros gazebo_msgs)
 ament_package()

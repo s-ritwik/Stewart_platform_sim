@@ -22,6 +22,7 @@ def generate_launch_description():
     # Either the original runway world, or the edited one with the stewart block removed.
     world_file = os.path.join(
         os.environ.get('HOME', ''),
+        'projects',
         'ardupilot_gazebo',
         'worlds',
         'iris_arducopter_runway.world'
@@ -89,7 +90,16 @@ def generate_launch_description():
         executable='controller_platform_ros2.py',
         name='platform_pose_controller',
         output='screen',
-        parameters=[{'use_csv': True},{'csv_path': '/home/chiru/ship_deck_dataset/Fast_heave_D1H5_1.2.csv'}],
+        parameters=[
+            {'use_csv': False},
+            {'csv_path': '/home/rycker/projects/ros2_ws/src/stewart_platform_learning/src/stewart_platform/D1H3_heave.csv'},
+            {'move_whole_platform_xy': True},
+            {'model_name': 'stewart'},
+            {'base_link_name': 'base_link'},
+            {'world_x_origin': 3.0},
+            {'world_y_origin': 0.0},
+            {'world_z': 0.0},
+        ],
     )
 
     return LaunchDescription([

@@ -10,6 +10,7 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo_ros/node.hpp>
 
+#include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -39,10 +40,16 @@ public:
 
     model_ = model;
     std::string top_link_name = "platform_link";
+    std::string base_link_name = "base_link";
     
     top_link_ = model_->GetLink(top_link_name);
     if (!top_link_) {
       gzerr << "Top platform link '" << top_link_name
+            << "' not found in model '" << model_->GetName() << "'\n";
+    }
+    base_link_ = model_->GetLink(base_link_name);
+    if (!base_link_) {
+      gzerr << "Base platform link '" << base_link_name
             << "' not found in model '" << model_->GetName() << "'\n";
     }
 
@@ -164,6 +171,10 @@ private:
       "/stewart/legs_force_cmd", rclcpp::SystemDefaultsQoS(),
       std::bind(&SDFJointController::handleForceCommand, this, _1));
 
+    base_pose_sub_ = ros_node_->create_subscription<geometry_msgs::msg::Pose>(
+      "/stewart/base_pose_cmd", rclcpp::SystemDefaultsQoS(),
+      std::bind(&SDFJointController::handleBasePoseCommand, this, _1));
+
     effort_pub_ = ros_node_->create_publisher<std_msgs::msg::Int32MultiArray>(
       "/stewart/joint_efforts", rclcpp::SystemDefaultsQoS());
 
@@ -219,8 +230,26 @@ private:
     }
   }
 
+  void handleBasePoseCommand(const geometry_msgs::msg::Pose::SharedPtr msg)
+  {
+    base_pose_cmd_.Pos().Set(
+      msg->position.x,
+      msg->position.y,
+      msg->position.z);
+    base_pose_cmd_.Rot() = ignition::math::Quaterniond(
+      msg->orientation.w,
+      msg->orientation.x,
+      msg->orientation.y,
+      msg->orientation.z);
+    has_base_pose_cmd_ = true;
+  }
+
   void onUpdate(const common::UpdateInfo &)
   {
+    if (base_link_ && has_base_pose_cmd_) {
+      base_link_->SetWorldPose(base_pose_cmd_);
+    }
+
     std_msgs::msg::Int32MultiArray msg;
     msg.data.reserve(actuated_joints_.size());
     for (const auto & joint : actuated_joints_) {
@@ -259,18 +288,22 @@ private:
 
   physics::ModelPtr model_;
   physics::LinkPtr top_link_;
+  physics::LinkPtr base_link_;
   std::vector<physics::JointPtr> actuated_joints_;
   std::vector<double> initial_positions_;
 
   std::shared_ptr<gazebo_ros::Node> ros_node_;
   rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr position_sub_;
   rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr force_sub_;
+  rclcpp::Subscription<geometry_msgs::msg::Pose>::SharedPtr base_pose_sub_;
   rclcpp::Subscription<geometry_msgs::msg::Vector3>::SharedPtr pid_sub_;
   rclcpp::Publisher<std_msgs::msg::Int32MultiArray>::SharedPtr effort_pub_;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr top_pose_pub_;
   
   event::ConnectionPtr update_connection_;
 
+  ignition::math::Pose3d base_pose_cmd_;
+  bool has_base_pose_cmd_{false};
   double propor_{64.0};
   double integr_{35.0};
   double deriv_{0.5};

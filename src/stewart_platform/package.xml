@@ -14,6 +14,7 @@
   <depend>geometry_msgs</depend>
   <depend>std_msgs</depend>
   <depend>gazebo_ros</depend>
+  <depend>gazebo_msgs</depend>
   <depend>gazebo</depend>
   <depend>Eigen3</depend>
   <depend>eigen3_cmake_module</depend>
