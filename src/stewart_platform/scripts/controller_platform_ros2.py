@@ -19,8 +19,6 @@ class CommandState:
     pitch: float = 0.0
     heave: float = 0.0
     yaw: float = 0.0
-    x: float = 0.0
-    y: float = 0.0
 
 
 class StewartCommandNode(Node):
@@ -44,13 +42,7 @@ class StewartCommandNode(Node):
         self.declare_parameter("roll_amplitude", 0.0)
         self.declare_parameter("pitch_amplitude", 0.0)
         self.declare_parameter("heave_amplitude", 0.6)
-        self.declare_parameter("x_amplitude", 0.0)
-        self.declare_parameter("y_amplitude", 0.0)
         self.declare_parameter("frequency", 0.5)
-        self.declare_parameter("x_frequency", 0.2)
-        self.declare_parameter("y_frequency", 0.1)
-        self.declare_parameter("x_phase", 0.0)
-        self.declare_parameter("y_phase", math.pi / 2.0)
         self.declare_parameter("filter_alpha", 0.5)
         self.declare_parameter("command_rate", 20.0)
 
@@ -114,8 +106,6 @@ class StewartCommandNode(Node):
                             pitch=pitch,
                             heave=heave,
                             yaw=0.0,
-                            x=sway,
-                            y=0.0,
                         )
                     )
                     count += 1
@@ -168,10 +158,6 @@ class StewartCommandNode(Node):
             self.heave_pred_pub.publish(heave_msg)
         else:
             freq = float(self.get_parameter("frequency").value)
-            x_freq = float(self.get_parameter("x_frequency").value)
-            y_freq = float(self.get_parameter("y_frequency").value)
-            x_phase = float(self.get_parameter("x_phase").value)
-            y_phase = float(self.get_parameter("y_phase").value)
             desired = CommandState(
                 roll=float(self.get_parameter("roll_amplitude").value)
                 * math.sin(freq * elapsed),
@@ -180,10 +166,6 @@ class StewartCommandNode(Node):
                 heave=float(self.get_parameter("heave_amplitude").value)
                 * math.sin(freq * elapsed),
                 yaw=0.0,
-                x=float(self.get_parameter("x_amplitude").value)
-                * math.sin(x_freq * elapsed + x_phase),
-                y=float(self.get_parameter("y_amplitude").value)
-                * math.sin(y_freq * elapsed + y_phase),
             )
 
         kp = float(self.get_parameter("kp").value)
@@ -194,8 +176,6 @@ class StewartCommandNode(Node):
             pitch=desired.pitch - self.last_command.pitch,
             heave=desired.heave - self.last_command.heave,
             yaw=desired.yaw - self.last_command.yaw,
-            x=desired.x - self.last_command.x,
-            y=desired.y - self.last_command.y,
         )
 
         command = CommandState(
@@ -203,8 +183,6 @@ class StewartCommandNode(Node):
             pitch=self._pd(desired.pitch, errors.pitch, self.prev_error.pitch, kp, kd),
             heave=self._pd(desired.heave, errors.heave, self.prev_error.heave, kp, kd),
             yaw=self._pd(desired.yaw, errors.yaw, self.prev_error.yaw, kp, kd),
-            x=self._pd(desired.x, errors.x, self.prev_error.x, kp, kd),
-            y=self._pd(desired.y, errors.y, self.prev_error.y, kp, kd),
         )
         self.prev_error = errors
 
@@ -214,8 +192,6 @@ class StewartCommandNode(Node):
             pitch=self._smooth(command.pitch, self.last_command.pitch, alpha),
             heave=self._smooth(command.heave, self.last_command.heave, alpha),
             yaw=self._smooth(command.yaw, self.last_command.yaw, alpha),
-            x=self._smooth(command.x, self.last_command.x, alpha),
-            y=self._smooth(command.y, self.last_command.y, alpha),
         )
         self.last_command = smoothed
 
@@ -223,8 +199,6 @@ class StewartCommandNode(Node):
         twist.angular.x = smoothed.roll
         twist.angular.y = smoothed.pitch
         twist.angular.z = smoothed.yaw
-        twist.linear.x = smoothed.x
-        twist.linear.y = smoothed.y
         twist.linear.z = smoothed.heave
         self.publisher_.publish(twist)
 

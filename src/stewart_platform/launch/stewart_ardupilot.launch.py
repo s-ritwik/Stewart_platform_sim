@@ -91,10 +91,8 @@ def generate_launch_description():
         name='platform_pose_controller',
         output='screen',
         parameters=[
-            {'use_csv': False},
+            {'use_csv': True},
             {'csv_path': '/home/rycker/projects/ros2_ws/src/stewart_platform_learning/src/stewart_platform/D1H3_heave.csv'},
-            {'x_amplitude': 0.0},
-            {'y_amplitude': 0.0},
             {'command_rate': 20.0},
         ],
     )
